@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.baway.weektwo.Url.urlStr;
 import com.baway.weektwo.adapter.MyAdapter;
@@ -51,22 +52,27 @@ public class MyAsycTask extends AsyncTask<String,Integer,String>{
         if (s!=null){
             Gson gson=new Gson();
             GsonBean gsonBean = gson.fromJson(s, GsonBean.class);
-            List<GsonBean.ContentsBean> contents = gsonBean.getContents();
+            final List<GsonBean.ContentsBean> contents = gsonBean.getContents();
             MyAdapter adapter=new MyAdapter(context,contents);
             lv.setAdapter(adapter);
-
-            lv.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
-                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-
-                }
-
-                @Override
-                public void onNothingSelected(AdapterView<?> adapterView) {
-
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    Toast.makeText(context,contents.get(i).getId()+"",Toast.LENGTH_SHORT).show();
                 }
             });
 
+            lv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+             @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+             GsonBean.ContentsBean contentsBean = contents.get(i);
+                 contents.remove(contentsBean);
+                 MyAdapter adapter=new MyAdapter(context,contents);
+                 lv.setAdapter(adapter);
+
+        return true;
+    }
+});
         }
 
 
